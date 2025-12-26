@@ -46,8 +46,6 @@ Each module is built as its own CMake library and linked into a single executabl
 - Git
 
 ### Build (from repo root)
-
-```bash
 cmake -S . -B build
 cmake --build build
 

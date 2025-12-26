@@ -26,13 +26,13 @@ The project emphasizes:
 ## Architecture
 
 The codebase is organized into modules:
-src/
-app/ - Application entry point
-sim/ - Simulation core (world, stepping, entities)
-render/ - Rendering layer (OpenGL planned)
-sensors/ - Sensor interfaces and implementations
-io/ - Logging and I/O utilities
-util/ - Shared helpers
+- src/
+- app/ - Application entry point
+- sim/ - Simulation core (world, stepping, entities)
+- render/ - Rendering layer (OpenGL planned)
+- sensors/ - Sensor interfaces and implementations
+- io/ - Logging and I/O utilities
+- util/ - Shared helpers
 
 Each module is built as its own CMake library and linked into a single executable.
 

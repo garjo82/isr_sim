@@ -1,6 +1,7 @@
-#include <iostream>
+#include "app/App.h"
 
 int main() {
-    std::cout << "ISR sim starting...\n";
+    App app;
+    app.Run();
     return 0;
 }

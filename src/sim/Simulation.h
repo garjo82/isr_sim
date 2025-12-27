@@ -1,4 +1,5 @@
 #pragma once
+#include "World.h"
 
 class Simulation {
 public:
@@ -6,5 +7,8 @@ public:
 
 private:
     void Step();
+
     int step_count_ = 0;
+    double dt_ = 0.1;
+    World world_;
 };

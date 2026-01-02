@@ -12,7 +12,7 @@ public:
 
     double time_s() const;
 
-    void Add(const std::shared_ptr<Entity>& e);
+    void Add(std::shared_ptr<Entity> e);
     const std::vector<std::shared_ptr<Entity>>& entities() const;
 
 private:

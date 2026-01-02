@@ -18,7 +18,7 @@ The project emphasizes:
 
 - Build a lightweight ISR-style simulation harness
 - Support multiple entities (e.g., drones, targets)
-- EEnable deterministic scenario generation and repeatable runs
+- Enable deterministic scenario generation and repeatable runs
 - Provide clear separation between simulation, logging, and visualization
 - Serve as a portfolio project for systems, autonomy, and mission-focused roles
 

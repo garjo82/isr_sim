@@ -40,4 +40,4 @@ add_executable(isr_sim
     src/main.cpp
 )
 target_include_directories(isr_sim PRIVATE src)
-target_link_libraries(isr_sim PRIVATE app sim render sensors io)
+target_link_libraries(isr_sim PRIVATE app)

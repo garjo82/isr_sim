@@ -1,10 +1,16 @@
 #include "App.h"
+
 #include "../sim/Simulation.h"
-#include "../sim/Entity.h"
 #include "Scenario.h"
-#include <cstdint>
+#include "../io/CsvLogger.h"
 
 void App::Run() {
+    // Config
+    const double dt = 0.1;
+    const std::uint32_t seed = 123;
+    const int steps = 300;
+    const double detect_range_m = 10.0;
+
     ScenarioConfig cfg;
     cfg.world_min_x = 0.0;
     cfg.world_max_x = 200.0;
@@ -17,19 +23,26 @@ void App::Run() {
     cfg.drone_heading = 0.0;
     cfg.drone_speed_mps = 5.0;
 
-    Simulation sim1;
-    sim1.Reset(0.1, 123);
-    BuildScenario(sim1, cfg);
+    // Setup sim + scenario
+    Simulation sim;
+    sim.Reset(dt, seed);
+    BuildScenario(sim, cfg);
 
-    Simulation sim2;
-    sim2.Reset(0.1, 123);
-    BuildScenario(sim2, cfg);
+    // Logging
+    CsvLogger logger;
+    logger.OpenStateLog("state.csv");
+    logger.OpenEventLog("events.csv");
+    logger.WriteStateHeader();
+    logger.WriteEventHeader();
 
-    Simulation sim3;
-    sim3.Reset(0.1, 124);
-    BuildScenario(sim3, cfg);
+    // Log initial state (step 0)
+    logger.LogState(sim);
+    logger.LogDetectionsProximity(sim, detect_range_m);
 
-    // now do the real run
-    sim1.RunForSteps(300);
+    // Run step-by-step so we can log each tick
+    for (int i = 0; i < steps; ++i) {
+        sim.RunForSteps(1);
+        logger.LogState(sim);
+        logger.LogDetectionsProximity(sim, detect_range_m);
+    }
 }
-

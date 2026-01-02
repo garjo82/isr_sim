@@ -26,7 +26,7 @@ add_library(sensors
 target_include_directories(sensors PUBLIC src)
 
 add_library(io
-    src/io/Logger.cpp
+    src/io/CsvLogger.cpp
 )
 target_include_directories(io PUBLIC src)
 
@@ -35,7 +35,7 @@ add_library(app
     src/app/Scenario.cpp
 )
 target_include_directories(app PUBLIC src)
-target_link_libraries(app PRIVATE sim)
+target_link_libraries(app PRIVATE io render sensors sim)
 
 add_executable(isr_sim
     src/main.cpp

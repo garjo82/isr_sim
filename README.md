@@ -28,21 +28,16 @@ The project emphasizes:
 
 The codebase is organized into modules:
 - src/
-- app/
-Application orchestration layer. Owns scenario setup, simulation execution, and logging.
+- app/ - Application orchestration layer. Owns scenario setup, simulation execution, and logging.
 The main executable is intentionally thin.
-- sim/
-	Core simulation logic:
+- sim/ - Core simulation logic:
 	- deterministic simulation loop
 	- world state and time management
 	- entity abstractions (Drone, Target, Pose)
-- io/
-Logging and output utilities.
+- io/ - Logging and output utilities.
 Currently includes CSV-based state and event logging for headless analysis.
-- sensors/
-Sensor interfaces and detection logic (prototype proximity detection implemented via logging).
-- render/
-Optional rendering layer (planned).
+- sensors/ - Sensor interfaces and detection logic (prototype proximity detection implemented via logging).
+- render/ - Optional rendering layer (planned).
 Rendering will be decoupled from simulation and used strictly for development and debugging.
 
 Each module is built as its own CMake library and linked into a single executable.
@@ -78,8 +73,8 @@ deterministic simulation results suitable for offline analysis or replay.
 - Scenario-based random target generation (seeded and reproducible)
 - Drone kinematic motion with heading-based movement
 - Headless CSV logging for:
--- per-step world state
--- proximity detection events
+	- per-step world state
+	- proximity detection events
 - Clean, multi-target CMake build with explicit dependency management
 
 At this stage, the framework functions as a headless ISR simulation harness capable of
@@ -88,10 +83,10 @@ producing analyzable data.
 ## Next steps:
 - Line-by-line internal code review and cleanup
 - Add optional 2D rendering layer for development/debugging:
--- drone visualization with heading
--- target visualization
--- world bounds
--- optional detection radius
+	- drone visualization with heading
+	- target visualization
+	- world bounds
+	- optional detection radius
 - Implement higher-level drone search behaviors (e.g., sweep patterns)
 - Add replay/visualization from logged CSV data
 - Introduce lightweight CLI configuration for batch experiments

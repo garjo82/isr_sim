@@ -32,6 +32,7 @@ target_include_directories(io PUBLIC src)
 
 add_library(app
     src/app/App.cpp
+    src/app/Scenario.cpp
 )
 target_include_directories(app PUBLIC src)
 target_link_libraries(app PRIVATE sim)

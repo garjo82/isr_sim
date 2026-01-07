@@ -9,7 +9,8 @@ The project emphasizes:
 - modern C++ (C++20)
 - modular design using CMake targets
 - deterministic, headless simulation for analysis
-- optional visualization for development and reasoning
+- explicit separation of truth, perception, and visualization
+- optional rendering and logging for development and reasoning
 - reproducible builds and tooling
 
 ---
@@ -19,7 +20,8 @@ The project emphasizes:
 - Build a lightweight ISR-style simulation harness
 - Support multiple entities (e.g., drones, targets)
 - Enable deterministic scenario generation and repeatable runs
-- Provide clear separation between simulation, logging, and visualization
+- Model realistic sensor behavior distinct from ground truth
+- Provide clean separation between simulation, sensing, logging, and visualization
 - Serve as a portfolio project for systems, autonomy, and mission-focused roles
 
 ---
@@ -28,19 +30,49 @@ The project emphasizes:
 
 The codebase is organized into modules:
 - src/
-- app/ - Application orchestration layer. Owns scenario setup, simulation execution, and logging.
-The main executable is intentionally thin.
-- sim/ - Core simulation logic:
-	- deterministic simulation loop
-	- world state and time management
-	- entity abstractions (Drone, Target, Pose)
-- io/ - Logging and output utilities.
-Currently includes CSV-based state and event logging for headless analysis.
-- sensors/ - Sensor interfaces and detection logic (prototype proximity detection implemented via logging).
-- render/ - Optional rendering layer (planned).
-Rendering will be decoupled from simulation and used strictly for development and debugging.
+	- app/ Application orchestration layer
+	- sim/ Core deterministic simulation
+	- sensors/ Sensor models and detection logic
+	- io/ Logging utilities (ground truth and perception)
+	- render/ Optional visualization (development/debug only)
 
-Each module is built as its own CMake library and linked into a single executable.
+### app/
+Application entry point and orchestration layer. Owns:
+- scenario configuration
+- simulation lifecycle
+- wiring of optional consumers (logging, rendering)
+The main executable is intentionally thin.
+
+### sim/
+Core simulation logic:
+- deterministic timestep-based simulation loop
+- world state and time management
+- entity abstractions (Drone, Target, Pose)
+- reproducible behavior via seeded randomness
+This layer is **fully headless** and has no dependency on IO or rendering.
+
+### sensors/
+Sensor models that operate on world state but produce **no direct side effects**.
+Current implementation includes a radar-like sensor with:
+- range and field-of-view gating
+- probabilistic dropouts
+- measurement noise
+- confidence estimation
+- false positives (clutter)
+Sensor output is intentionally separated from ground truth.
+
+### io/
+Logging utilities used as optional consumers:
+- `GroundTruthLogger` — logs full simulation state
+- `PerceptionLogger` — logs sensor detections
+Both can be independently enabled or disabled at runtime.
+
+### render/
+Optional ASCII-based renderer for development and reasoning.
+- Consumes world state and sensor detections
+- Portable across platforms
+- Gracefully degrades when terminal features are unavailable
+- Rendering is **strictly optional** and not required for simulation or logging
 
 ---
 
@@ -52,8 +84,9 @@ Each module is built as its own CMake library and linked into a single executabl
 - Git
 
 ### Build (from repo root)
-- cmake -S . -B build
-- cmake --build build
+```bash
+cmake -S . -B build
+cmake --build build
 
 ---
 
@@ -62,35 +95,36 @@ Each module is built as its own CMake library and linked into a single executabl
 ### On Windows (Debug):
 .\build\Debug\isr_sim.exe
 
-Running the executable produces CSV output files (state.csv, events.csv) containing
-deterministic simulation results suitable for offline analysis or replay.
+Running the executable can produce:
+- state.csv (ground truth)
+- detections.csv (sensor perception)
+Logging and rendering are controlled via simple runtime toggles in App.
 
 ---
 
 ## Current Status
-- Deterministic simulation core implemented
-- World and entity update loop complete
-- Scenario-based random target generation (seeded and reproducible)
-- Drone kinematic motion with heading-based movement
-- Headless CSV logging for:
-	- per-step world state
-	- proximity detection events
-- Clean, multi-target CMake build with explicit dependency management
-
+- Deterministic headless simulation core
+- Scenario-based, reproducible world generation
+- Drone kinematic motion with heading-based dynamics
+- Radar-style sensor with noise, confidence, and false positives
+- Explicit separation between:
+	- ground truth
+	- perception output
+	- visualization
+- Optional ASCII rendering for debugging and reasoning
+- Clean modular CMake build
 At this stage, the framework functions as a headless ISR simulation harness capable of
 producing analyzable data.
 
-## Next steps:
-- Line-by-line internal code review and cleanup
-- Add optional 2D rendering layer for development/debugging:
-	- drone visualization with heading
-	- target visualization
-	- world bounds
-	- optional detection radius
-- Implement higher-level drone search behaviors (e.g., sweep patterns)
-- Add replay/visualization from logged CSV data
-- Introduce lightweight CLI configuration for batch experiments
-Rendering will remain optional and strictly decoupled from core simulation logic.
+## Future Work (Optional Extensions)
+- The current system is intentionally minimal. Possible extensions include:
+- More realistic drone dynamics and behaviors (e.g., sweep/search patterns)
+- Additional sensor types or multi-sensor fusion
+- Object tracking and data association
+- Graphical (2D/3D) visualization layers
+- Offline replay and analysis from logged CSV data
+- CLI-based configuration for batch experiments
+These are considered incremental engineering extensions, not requirements for the core system.
 
 ## Tech Stack
 - C++20

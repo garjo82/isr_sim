@@ -21,12 +21,13 @@ add_library(render
 target_include_directories(render PUBLIC src)
 
 add_library(sensors
-    src/sensors/Sensor.cpp
+    src/sensors/RadarSensor.cpp
 )
 target_include_directories(sensors PUBLIC src)
 
 add_library(io
-    src/io/CsvLogger.cpp
+    src/io/GroundTruthLogger.cpp
+    src/io/PerceptionLogger.cpp
 )
 target_include_directories(io PUBLIC src)
 

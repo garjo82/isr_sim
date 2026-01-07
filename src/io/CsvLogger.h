@@ -1,3 +1,7 @@
+// DEPRECATED:
+// Replaced by GroundTruthLogger and PerceptionLogger.
+// Kept temporarily for reference during refactor.
+
 #pragma once
 
 #include <fstream>

@@ -35,13 +35,21 @@ void App::Run() {
     cfg.drone_heading = 0.0;
     cfg.drone_speed_mps = 5.0;
 
+    // Feature toggles
+    const bool enable_rendering = true; // false to turn off rendering
+    const bool enable_truth_logging = true; // false to turn off truth logging
+    const bool enable_perception_logging = true; // false to turn off perception logging
+
     // Setup sim + scenario
     Simulation sim;
     sim.Reset(dt, seed);
     BuildScenario(sim, cfg);
 
     // ASCII debug renderer (draw every N steps)
-    AsciiRenderer renderer(100, 30, ClearMode::Auto); // adjust size if you want
+    std::unique_ptr<AsciiRenderer> renderer;
+    if (enable_rendering) {
+        renderer = std::make_unique<AsciiRenderer>(100, 30, ClearMode::Auto); // adjust size if you want
+    }
     RenderBounds rb;
     rb.min_x = cfg.world_min_x;
     rb.max_x = cfg.world_max_x;
@@ -51,13 +59,19 @@ void App::Run() {
     const int render_every_n_steps = 5;
 
     // Logging
-    GroundTruthLogger truth_logger;
-    truth_logger.OpenStateLog("state.csv");
-    truth_logger.WriteStateHeader();
+    std::unique_ptr<GroundTruthLogger> truth_logger;
+    if (enable_truth_logging) {
+        truth_logger = std::make_unique<GroundTruthLogger>();
+        truth_logger->OpenStateLog("state.csv");
+        truth_logger->WriteStateHeader();
+    }
 
-    PerceptionLogger perception_logger;
-    perception_logger.OpenDetectionsLog("detections.csv");
-    perception_logger.WriteDetectionsHeader();
+    std::unique_ptr<PerceptionLogger> perception_logger;
+    if (enable_perception_logging) {
+        perception_logger = std::make_unique<PerceptionLogger>();
+        perception_logger->OpenDetectionsLog("detections.csv");
+        perception_logger->WriteDetectionsHeader();
+    }
 
     // Sensors (single sensor now, multi-sensor ready)
     std::vector<std::unique_ptr<RadarSensor>> sensors;
@@ -66,21 +80,24 @@ void App::Run() {
     sensors.push_back(std::make_unique<RadarSensor>(radar_cfg));
 
     // Log initial state (step 0)
-    truth_logger.LogState(sim);
+    if (truth_logger) truth_logger->LogState(sim);
     {
         const double t = sim.world().time_s();
         const int step = sim.step_count();
         std::vector<Detection> all_dets;
         for (auto& s : sensors) {
             auto dets = s->Update(sim);
-            perception_logger.LogDetections(t, step, dets);
+            if (perception_logger) perception_logger->LogDetections(t, step, dets);
             all_dets.insert(all_dets.end(), dets.begin(), dets.end());
         }
 
         if (step % render_every_n_steps == 0) {
-            const bool cleared = renderer.Render(sim.world(), all_dets, rb, step, t);
-            if (cleared) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(renderer.FrameDelayMs()));
+            if (renderer) {
+                const bool cleared = renderer->Render(sim.world(), all_dets, rb, step, t);
+                if (cleared) {
+                    std::this_thread::sleep_for(
+                        std::chrono::milliseconds(renderer->FrameDelayMs()));
+                }
             }
         }
     }
@@ -89,23 +106,25 @@ void App::Run() {
     for (int i = 0; i < steps; ++i) {
         sim.RunForSteps(1);
 
-        truth_logger.LogState(sim);
+        if (truth_logger) truth_logger->LogState(sim);
 
         const double t = sim.world().time_s();
         const int step = sim.step_count();
         std::vector<Detection> all_dets;
         for (auto& s : sensors) {
             auto dets = s->Update(sim);
-            perception_logger.LogDetections(t, step, dets);
+            if (perception_logger) perception_logger->LogDetections(t, step, dets);
             all_dets.insert(all_dets.end(), dets.begin(), dets.end());
         }
 
         if (step % render_every_n_steps == 0) {
-            const bool cleared = renderer.Render(sim.world(), all_dets, rb, step, t);
-            if (cleared) {
-                std::this_thread::sleep_for(std::chrono::milliseconds(renderer.FrameDelayMs()));
+            if (renderer) {
+                const bool cleared = renderer->Render(sim.world(), all_dets, rb, step, t);
+                if (cleared) {
+                    std::this_thread::sleep_for(
+                        std::chrono::milliseconds(renderer->FrameDelayMs()));
+                }
             }
-
         }
     }
 }

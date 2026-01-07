@@ -9,8 +9,13 @@
 #include "../sensors/RadarSensor.h"
 #include "../sensors/RadarConfig.h"
 
+#include "../render/AsciiRenderer.h"
+#include "../sim/World.h"
+
 #include <memory>
 #include <vector>
+#include <thread>
+#include <chrono>
 
 void App::Run() {
     // Config
@@ -35,6 +40,16 @@ void App::Run() {
     sim.Reset(dt, seed);
     BuildScenario(sim, cfg);
 
+    // ASCII debug renderer (draw every N steps)
+    AsciiRenderer renderer(100, 30, ClearMode::Auto); // adjust size if you want
+    RenderBounds rb;
+    rb.min_x = cfg.world_min_x;
+    rb.max_x = cfg.world_max_x;
+    rb.min_y = cfg.world_min_y;
+    rb.max_y = cfg.world_max_y;
+
+    const int render_every_n_steps = 5;
+
     // Logging
     GroundTruthLogger truth_logger;
     truth_logger.OpenStateLog("state.csv");
@@ -55,9 +70,18 @@ void App::Run() {
     {
         const double t = sim.world().time_s();
         const int step = sim.step_count();
+        std::vector<Detection> all_dets;
         for (auto& s : sensors) {
             auto dets = s->Update(sim);
             perception_logger.LogDetections(t, step, dets);
+            all_dets.insert(all_dets.end(), dets.begin(), dets.end());
+        }
+
+        if (step % render_every_n_steps == 0) {
+            const bool cleared = renderer.Render(sim.world(), all_dets, rb, step, t);
+            if (cleared) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(renderer.FrameDelayMs()));
+            }
         }
     }
 
@@ -69,10 +93,19 @@ void App::Run() {
 
         const double t = sim.world().time_s();
         const int step = sim.step_count();
-
+        std::vector<Detection> all_dets;
         for (auto& s : sensors) {
             auto dets = s->Update(sim);
             perception_logger.LogDetections(t, step, dets);
+            all_dets.insert(all_dets.end(), dets.begin(), dets.end());
+        }
+
+        if (step % render_every_n_steps == 0) {
+            const bool cleared = renderer.Render(sim.world(), all_dets, rb, step, t);
+            if (cleared) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(renderer.FrameDelayMs()));
+            }
+
         }
     }
 }

@@ -16,7 +16,7 @@ add_library(sim
 target_include_directories(sim PUBLIC src)
 
 add_library(render
-    src/render/Renderer.cpp
+    src/render/AsciiRenderer.cpp
 )
 target_include_directories(render PUBLIC src)
 

@@ -41,6 +41,7 @@ Application entry point and orchestration layer. Owns:
 - scenario configuration
 - simulation lifecycle
 - wiring of optional consumers (logging, rendering)
+
 The main executable is intentionally thin.
 
 ### sim/
@@ -49,6 +50,7 @@ Core simulation logic:
 - world state and time management
 - entity abstractions (Drone, Target, Pose)
 - reproducible behavior via seeded randomness
+
 This layer is **fully headless** and has no dependency on IO or rendering.
 
 ### sensors/
@@ -59,12 +61,14 @@ Current implementation includes a radar-like sensor with:
 - measurement noise
 - confidence estimation
 - false positives (clutter)
+
 Sensor output is intentionally separated from ground truth.
 
 ### io/
 Logging utilities used as optional consumers:
 - `GroundTruthLogger` logs full simulation state
 - `PerceptionLogger` logs sensor detections
+
 Both can be independently enabled or disabled at runtime.
 
 ### render/
@@ -97,6 +101,7 @@ cmake --build build
 Running the executable can produce:
 - state.csv (ground truth)
 - detections.csv (sensor perception)
+
 Logging and rendering are controlled via simple runtime toggles in App.
 
 ---
@@ -112,6 +117,7 @@ Logging and rendering are controlled via simple runtime toggles in App.
 	- visualization
 - Optional ASCII rendering for debugging and reasoning
 - Clean modular CMake build
+
 At this stage, the framework functions as a headless ISR simulation harness capable of
 producing analyzable data.
 
@@ -123,6 +129,7 @@ producing analyzable data.
 - Graphical (2D/3D) visualization layers
 - Offline replay and analysis from logged CSV data
 - CLI-based configuration for batch experiments
+
 These are considered incremental engineering extensions, not requirements for the core system.
 
 ## Tech Stack

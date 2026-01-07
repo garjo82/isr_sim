@@ -63,8 +63,8 @@ Sensor output is intentionally separated from ground truth.
 
 ### io/
 Logging utilities used as optional consumers:
-- `GroundTruthLogger` — logs full simulation state
-- `PerceptionLogger` — logs sensor detections
+- `GroundTruthLogger` logs full simulation state
+- `PerceptionLogger` logs sensor detections
 Both can be independently enabled or disabled at runtime.
 
 ### render/
@@ -84,7 +84,6 @@ Optional ASCII-based renderer for development and reasoning.
 - Git
 
 ### Build (from repo root)
-```bash
 cmake -S . -B build
 cmake --build build
 

@@ -84,12 +84,23 @@ Optional ASCII-based renderer for development and reasoning.
 
 ### Requirements
 - CMake 3.20+
-- C++20-compatible compiler (MSVC, Clang, or GCC)
+- C++20-compatible compiler:
+	- Windows: Visual Studio 2022 with "Desktop development with C++" workload.
+	- Linux: GCC 10+ or Clang 10+
+	- macOS: Xcode 12+
 - Git
 
 ### Build (from repo root)
-cmake -S . -B build
+cmake -B build -S .
 cmake --build build
+
+If you run into errors:
+Remove-Item -Recurse -Force build 
+cmake -B build -S .
+cmake --build build --target isr_sim
+
+For Windows users, the easiest way to ensure cl.exe is found is to use the 
+Developer PowerShell for VS 2022 instead of standard PowerShell.
 
 ---
 

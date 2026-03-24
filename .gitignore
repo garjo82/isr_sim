@@ -4,6 +4,9 @@ out/
 
 # Visual Studio
 .vs/
+*.sln
+*.vcxproj
+*.filters
 
 # Compiled files
 *.exe

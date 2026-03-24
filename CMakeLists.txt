@@ -43,3 +43,5 @@ add_executable(isr_sim
 )
 target_include_directories(isr_sim PRIVATE src)
 target_link_libraries(isr_sim PRIVATE app)
+
+install(TARGETS isr_sim DESTINATION bin)

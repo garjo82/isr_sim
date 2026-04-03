@@ -67,7 +67,6 @@ Sensor output is intentionally separated from ground truth.
 ### io/(Telemetry & Logging)
 Handles data persistence and real-time broadcast.
 - File IO: GroundTruthLogger and PerceptionLogger generate deterministic CSVs for offline analysis.
-- `PerceptionLogger` logs sensor detections
 - WebSocket Bridge: Integrated IXWebSocket to provide a live telemetry stream.
 - JSON Serialization: Uses nlohmann/json to package world state and sensor detections into a standardized schema for external consumers.
 

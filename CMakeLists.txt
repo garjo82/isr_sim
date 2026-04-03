@@ -28,8 +28,9 @@ target_include_directories(sensors PUBLIC src)
 add_library(io
     src/io/GroundTruthLogger.cpp
     src/io/PerceptionLogger.cpp
+    src/io/JsonSerializer.cpp
 )
-target_include_directories(io PUBLIC src)
+target_include_directories(io PUBLIC src third_party)
 
 add_library(app
     src/app/App.cpp

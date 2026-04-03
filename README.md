@@ -92,9 +92,9 @@ Optional ASCII-based renderer for development and reasoning.
 
 ### Build (from repo root)
 cmake -B build -S .  
-cmake --build build
+cmake --build build  
 
-If you run into errors:
+If you run into errors:  
 Remove-Item -Recurse -Force build  
 cmake -B build -S .  
 cmake --build build --target isr_sim  
@@ -107,13 +107,13 @@ Developer PowerShell for VS 2022 instead of standard PowerShell.
 ## Run
 
 ### On Windows (Debug):
-.\build\Debug\isr_sim.exe
+.\build\Debug\isr_sim.exe  
 
 Running the executable can produce:
-- state.csv (ground truth)
-- detections.csv (sensor perception)
+- state.csv (ground truth)  
+- detections.csv (sensor perception)  
 
-Logging and rendering are controlled via simple runtime toggles in App.
+Logging and rendering are controlled via simple runtime toggles in App.  
 
 ---
 

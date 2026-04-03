@@ -92,7 +92,7 @@ Optional ASCII-based renderer for development and reasoning.
 
 ### Build (from repo root)
 cmake -B build -S .  
-cmake --build build  
+cmake --build build --target isr_sim  
 
 If you run into errors:  
 Remove-Item -Recurse -Force build  

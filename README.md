@@ -64,19 +64,31 @@ Current implementation includes a radar-like sensor with:
 
 Sensor output is intentionally separated from ground truth.
 
-### io/
-Logging utilities used as optional consumers:
-- `GroundTruthLogger` logs full simulation state
+### io/(Telemetry & Logging)
+Handles data persistence and real-time broadcast.
+- File IO: GroundTruthLogger and PerceptionLogger generate deterministic CSVs for offline analysis.
 - `PerceptionLogger` logs sensor detections
+- WebSocket Bridge: Integrated IXWebSocket to provide a live telemetry stream.
+- JSON Serialization: Uses nlohmann/json to package world state and sensor detections into a standardized schema for external consumers.
 
 Both can be independently enabled or disabled at runtime.
 
 ### render/
-Optional ASCII-based renderer for development and reasoning.
-- Consumes world state and sensor detections
-- Portable across platforms
-- Gracefully degrades when terminal features are unavailable
-- Rendering is **strictly optional** and not required for simulation or logging
+Optional ASCII-based renderer and WebGL Visualizer for development and reasoning.
+- ASCII Renderer: A local, low-fidelity debug view that runs in the terminal.
+- WebGL Visualizer (In Progress): A React/Three.js frontend designed to consume the 10Hz WebSocket stream for high-fidelity 3D situational awareness.
+
+---
+
+## Execution Modes
+
+### The framework is designed to be a dual-purpose tool, toggled via App configuration:  
+
+Headless / Research Mode:  
+- Disables all rendering and networking. Runs at maximum CPU frequency to generate large datasets (CSV) for Monte Carlo simulations or model training.
+
+Interactive / Dev Mode:  
+- Throttles execution to a deterministic 10Hz heartbeat (matching production autonomy stacks like Aurora). Enables the ASCII renderer and the WebSocket broadcast for live debugging.
 
 ---
 
@@ -118,30 +130,11 @@ Logging and rendering are controlled via simple runtime toggles in App.
 ---
 
 ## Current Status
-- Deterministic headless simulation core
-- Scenario-based, reproducible world generation
-- Drone kinematic motion with heading-based dynamics
-- Radar-style sensor with noise, confidence, and false positives
-- Explicit separation between:
-	- ground truth
-	- perception output
-	- visualization
-- Optional ASCII rendering for debugging and reasoning
-- Clean modular CMake build
-
-At this stage, the framework functions as a headless ISR simulation harness capable of
-producing analyzable data.
-
-## Future Work (Optional Extensions)
-- The current system is intentionally minimal. Possible extensions include:
-- More realistic drone dynamics and behaviors (e.g., sweep/search patterns)
-- Additional sensor types or multi-sensor fusion
-- Object tracking and data association
-- Graphical (2D/3D) visualization layers
-- Offline replay and analysis from logged CSV data
-- CLI-based configuration for batch experiments
-
-These are considered incremental engineering extensions, not requirements for the core system.
+- [x] C++20 Simulation Core: Deterministic, state-based physics.
+- [x] Sensor Modeling: Probabilistic Radar with noise and false positives.
+- [x] Multithreaded Telemetry: Live 10Hz WebSocket server integrated into the simulation loop.
+- [x] System Observability: Simultaneous CSV logging, ASCII terminal rendering, and JSON broadcasting.
+- [ ] 3D Visualization: React + Three.js frontend (Current Active Sprint).
 
 ## Tech Stack
 - C++20

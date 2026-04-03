@@ -91,13 +91,13 @@ Optional ASCII-based renderer for development and reasoning.
 - Git
 
 ### Build (from repo root)
-cmake -B build -S .
+cmake -B build -S .  
 cmake --build build
 
 If you run into errors:
-Remove-Item -Recurse -Force build 
-cmake -B build -S .
-cmake --build build --target isr_sim
+Remove-Item -Recurse -Force build  
+cmake -B build -S .  
+cmake --build build --target isr_sim  
 
 For Windows users, the easiest way to ensure cl.exe is found is to use the 
 Developer PowerShell for VS 2022 instead of standard PowerShell.

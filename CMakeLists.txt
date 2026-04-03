@@ -9,6 +9,10 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+file(GLOB_RECURSE IX_SOURCES 
+    "third_party/ixwebsocket/ixwebsocket/*.cpp"
+)
+
 add_library(sim
     src/sim/Simulation.cpp
     src/sim/World.cpp
@@ -29,20 +33,30 @@ add_library(io
     src/io/GroundTruthLogger.cpp
     src/io/PerceptionLogger.cpp
     src/io/JsonSerializer.cpp
+    src/io/WebStreamer.cpp
+    ${IX_SOURCES}
 )
-target_include_directories(io PUBLIC src third_party)
+target_include_directories(io PUBLIC 
+    src 
+    third_party
+    third_party/ixwebsocket
+)
 
 add_library(app
     src/app/App.cpp
     src/app/Scenario.cpp
 )
 target_include_directories(app PUBLIC src)
-target_link_libraries(app PRIVATE io render sensors sim)
+target_link_libraries(app PUBLIC io PRIVATE render sensors sim)
 
 add_executable(isr_sim
     src/main.cpp
 )
 target_include_directories(isr_sim PRIVATE src)
 target_link_libraries(isr_sim PRIVATE app)
+
+if(WIN32)
+    target_link_libraries(io PUBLIC ws2_32 mswsock crypt32)
+endif()
 
 install(TARGETS isr_sim DESTINATION bin)

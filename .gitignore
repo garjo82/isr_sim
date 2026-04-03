@@ -21,3 +21,8 @@ out/
 # OS junk
 Thumbs.db
 .DS_Store
+
+# Third-party build artifacts
+*.lib
+*.a
+third_party/**/build/

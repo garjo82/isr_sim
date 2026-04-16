@@ -87,7 +87,7 @@ Headless / Research Mode:
 - Disables all rendering and networking. Runs at maximum CPU frequency to generate large datasets (CSV) for Monte Carlo simulations or model training.
 
 Interactive / Dev Mode:  
-- Throttles execution to a deterministic 10Hz heartbeat (matching production autonomy stacks like Aurora). Enables the ASCII renderer and the WebSocket broadcast for live debugging.
+- Throttles execution to a deterministic 10Hz heartbeat. Enables the ASCII renderer and the WebSocket broadcast for live debugging.
 
 ---
 
